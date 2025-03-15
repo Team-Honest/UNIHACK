@@ -9,7 +9,7 @@ const Navbar = () => {
   };
 
   return (
-    <div className="flex text-black items-center h-24 justify-between px-4 mx-auto max-w-[1240px]">
+    <div className="flex text-black bg-white items-center h-24 justify-between px-4 mx-auto max-w-[1240px]">
       
         <h1 className="text-3xl font-bold w-full">UNIHACK</h1>
         <ul className='hidden md:flex text-xl'>
