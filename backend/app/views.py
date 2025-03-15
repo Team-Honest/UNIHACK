@@ -2,6 +2,8 @@ from django.http import request, JsonResponse
 from django.shortcuts import render
 from django.conf import settings
 
+import json
+
 import google.generativeai as genai
 
 import app.env
@@ -14,16 +16,8 @@ model = genai.GenerativeModel(
 
 chat = model.start_chat()
 
-def bruh(request):
-  while True:
-    text = input("What happens next: ")
-    print("")
-
-    response = chat.send_message(text)
-
-    for chunk in response:
-      print(chunk.text, end="")
-
-    print("\n")
-
-  return render(request, 'index.html')
+def generate_story(request):
+  if request.method == 'POST':
+    return JsonResponse({"response": "BRUH!"})
+  else:
+    return JsonResponse({'error':"Invalid request method. Please send a POST request."}, status=400)

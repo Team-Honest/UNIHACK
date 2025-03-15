@@ -18,5 +18,5 @@ from django.urls import path
 import app.views
 
 urlpatterns = [
-    path('', app.views.bruh, name='bruh')
+    path('generate-story', app.views.generate_story, name='bruh')
 ]
