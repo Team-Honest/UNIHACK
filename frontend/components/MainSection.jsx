@@ -58,11 +58,11 @@ const MainSection = () => {
         <h2 className="text-3xl font-bold text-center">🕹 How to Play</h2>
         <ol className="mt-4 text-lg space-y-2">
           <li>1️⃣ Click the <strong>Start Game</strong> button.</li>
-          <li>2️⃣ Each player submits a **line or keywords**.</li>
-          <li>3️⃣ AI generates **a creative plot twist**.</li>
-          <li>4️⃣ Players continue adding lines **one by one**.</li>
+          <li>2️⃣ Each player submits a <strong> line or keywords</strong> .</li>
+          <li>3️⃣ AI generates <strong> a creative plot twist</strong> .</li>
+          <li>4️⃣ Players continue adding lines <strong> one by one</strong> .</li>
           <li>5️⃣ AI keeps twisting the story.</li>
-          <li>6️⃣ Enjoy reading the final **bizarre & funny** story!</li>
+          <li>6️⃣ Enjoy reading the final <strong> bizarre & funny</strong> story!</li>
         </ol>
       </div>
 
