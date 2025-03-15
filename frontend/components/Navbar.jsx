@@ -1,7 +1,6 @@
 import React, {useState}from 'react'
 import { AiOutlineClose, AiOutlineMenu } from 'react-icons/ai'
-
-
+import "../src/app/globals.css"
 const Navbar = () => {
   const [nav, setNav] = useState(false);
   
@@ -10,13 +9,12 @@ const Navbar = () => {
   };
 
   return (
-    <div className="flex text-white items-center h-24 justify-between px-4 mx-auto max-w-[1240px]">
+    <div className="flex text-black items-center h-24 justify-between px-4 mx-auto max-w-[1240px]">
       
-        <h1 className="text-3xl font-bold w-full text-purple">REACT. LAB</h1>
-        <ul className='hidden md:flex'>
+        <h1 className="text-3xl font-bold w-full">UNIHACK</h1>
+        <ul className='hidden md:flex text-xl'>
             <li className='p-4'>Home</li>
-            <li className='p-4'>Company</li>
-            <li className='p-4'>Resources</li>
+            <li className='p-4 text-yellow-400'>Start Game</li>
             <li className='p-4'>About</li>
             <li className='p-4'>Contact</li>
         </ul>
@@ -29,10 +27,10 @@ const Navbar = () => {
           <h1 className="text-3xl font-bold w-full text-purple m-3">REACT. LAB</h1>
           <ul className='p-4 uppercase '>
             <li className='p-4 border-b border-gray-600'>Home</li>
-            <li className='p-4 border-b border-gray-600'>Company</li>
-            <li className='p-4 border-b border-gray-600'>Resources</li>
+            <li className='p-4 border-b border-gray-600'>Start Game</li>
             <li className='p-4 border-b border-gray-600'>About</li>
-            <li className='p-4'>Contact</li>
+            <li className='p-4 border-b border-gray-600'>Contact</li>
+            
           </ul>
         </div>
     

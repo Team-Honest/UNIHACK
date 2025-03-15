@@ -1,4 +1,5 @@
 import React from 'react'
+import "../src/app/globals.css";
 import {
     FaDribbbleSquare,
     FaFacebookSquare,
@@ -9,9 +10,9 @@ import {
 
 const Footer = () => {
   return (
-    <div className='max-w-[1240px] mx-auto py-16 px-4 grid lg:grid-cols-3 gap-8 text-gray-300'>
+    <div className='max-w-[1240px] mx-auto py-16 px-4 grid lg:grid-cols-3 gap-8 text-black'>
         <div>
-           <h1 className="text-3xl font-bold w-full text-purple">REACT. LAB</h1>
+           <h1 className="text-3xl font-bold w-full text-purple">UNIHACK</h1>
             <p className='py-4 '>Lorem ipsum dolor sit amet consectetur adipisicing elit. Alias aliquam quod dolore fuga cupiditate! Aspernatur, sint modi? Laboriosam ad odio dolor ducimus fugiat porro consectetur quas corporis, iusto delectus quibusdam.</p>
             <div className='flex justify-between md:w-[75%] my-6'>
                 <FaFacebookSquare size={30}/>
