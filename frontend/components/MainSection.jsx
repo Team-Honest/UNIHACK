@@ -2,6 +2,22 @@ import React, { useEffect, useState } from "react";
 
 const MainSection = () => {
   const [showScrollButton, setShowScrollButton] = useState(false);
+  const [typedText, setTypedText] = useState(""); // Typing effect state
+  const fullText = "🎭 AI Story Chaos 🎭"; // Full title text
+
+  // Typing Animation Effect
+  useEffect(() => {
+    let index = 0;
+    const interval = setInterval(() => {
+      if (index < fullText.length) {
+        setTypedText(fullText.slice(0, index + 1));
+        index++;
+      } else {
+        clearInterval(interval);
+      }
+    }, 150); // Typing speed
+    return () => clearInterval(interval);
+  }, []);
 
   // Detects scroll position and toggles the "scroll to top" button
   useEffect(() => {
@@ -23,8 +39,11 @@ const MainSection = () => {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen text-center text-white bg-gradient-to-r from-purple-600 to-pink-500 transition-all duration-500">
-      {/* Title */}
-      <h1 className="text-5xl font-extrabold opacity-90">🎭 AI Story Chaos 🎭</h1>
+      {/* Title with Typing Animation */}
+      <h1 className="text-5xl font-extrabold opacity-90">
+        {typedText}
+        <span className="blink">|</span>
+      </h1>
       <p className="mt-4 text-lg max-w-2xl opacity-90">
         Start with an idea, let AI & your friends create the <strong>most bizarre</strong> story ever!
       </p>
@@ -39,7 +58,6 @@ const MainSection = () => {
 
       {/* Floating Animation Elements */}
       <div className="absolute top-10 left-10 w-12 h-12 bg-white/30 rounded-full animate-bounce"></div>
-      {/* <div className="absolute bottom-10 right-10 w-16 h-16 bg-white/20 rounded-full animate-pulse"></div> */}
 
       {/* Game Rules Section */}
       <div className="w-4/5 mt-10 p-6 bg-gray-900/80 rounded-lg shadow-lg text-left">
@@ -58,9 +76,9 @@ const MainSection = () => {
         <h2 className="text-3xl font-bold text-center">🕹 How to Play</h2>
         <ol className="mt-4 text-lg space-y-2">
           <li>1️⃣ Click the <strong>Start Game</strong> button.</li>
-          <li>2️⃣ Each player submits a <strong> line or keywords</strong> .</li>
-          <li>3️⃣ AI generates <strong> a creative plot twist</strong> .</li>
-          <li>4️⃣ Players continue adding lines <strong> one by one</strong> .</li>
+          <li>2️⃣ Each player submits a <strong> line or keywords</strong>.</li>
+          <li>3️⃣ AI generates <strong> a creative plot twist</strong>.</li>
+          <li>4️⃣ Players continue adding lines <strong> one by one</strong>.</li>
           <li>5️⃣ AI keeps twisting the story.</li>
           <li>6️⃣ Enjoy reading the final <strong> bizarre & funny</strong> story!</li>
         </ol>
@@ -75,6 +93,18 @@ const MainSection = () => {
           ⬆️
         </div>
       )}
+
+      {/* Typing Animation CSS */}
+      <style jsx>{`
+        .blink {
+          animation: blink-animation 1s steps(2, start) infinite;
+        }
+        @keyframes blink-animation {
+          0% { opacity: 1; }
+          50% { opacity: 0; }
+          100% { opacity: 1; }
+        }
+      `}</style>
     </div>
   );
 };

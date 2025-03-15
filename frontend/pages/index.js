@@ -5,7 +5,7 @@ import Navbar from "../components/Navbar";
 
 export default function Home() {
     return (
-        <div classname="">
+        <div classname="bg-white">
             <Navbar></Navbar> 
             <MainSection></MainSection>
             <Footer></Footer>
