@@ -1,6 +1,7 @@
 from django.http import request, JsonResponse
 from django.shortcuts import render
 from django.conf import settings
+from django.views.decorators.csrf import csrf_exempt
 
 import json
 
@@ -21,9 +22,10 @@ chat = client.chats.create(model="gemini-2.0-flash", config=GenerateContentConfi
         ]
     ))
 
+@csrf_exempt
 def generate_beat(request):
   if request.method == 'POST':
-    data = json.loads(request)
+    data = json.loads(request.body.decode('utf-8'))
 
     prompt = data.get("prompt", "")
     if not prompt:

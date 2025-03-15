@@ -18,5 +18,5 @@ from django.urls import path
 import app.views
 
 urlpatterns = [
-    path('generate-beat', app.views.generate_beat, name='bruh')
+    path('generate-beat/', app.views.generate_beat, name='bruh')
 ]
