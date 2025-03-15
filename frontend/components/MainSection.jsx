@@ -1,106 +1,50 @@
 import React, { useEffect, useState } from "react";
 
 const MainSection = () => {
-  const [scrollPosition, setScrollPosition] = useState(0);
+  const [showScrollButton, setShowScrollButton] = useState(false);
 
-  // Parallax Effect: Updates background based on scroll
+  // Detects scroll position and toggles the "scroll to top" button
   useEffect(() => {
     const handleScroll = () => {
-      setScrollPosition(window.scrollY * 0.5);
+      if (window.scrollY > 200) {
+        setShowScrollButton(true);
+      } else {
+        setShowScrollButton(false);
+      }
     };
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // Scroll to Top Function
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        height: "100vh",
-        textAlign: "center",
-        background: `linear-gradient(to right, #7f00ff, #e100ff)`,
-        backgroundPosition: `0px ${scrollPosition}px`,
-        transition: "background-position 0.2s ease-out",
-        color: "white",
-        fontFamily: "Arial, sans-serif",
-      }}
-    >
+    <div className="flex flex-col items-center justify-center min-h-screen text-center text-white bg-gradient-to-r from-purple-600 to-pink-500 transition-all duration-500">
       {/* Title */}
-      <h1 style={{ fontSize: "3rem", opacity: 0.9 }}>🎭 AI Story Chaos 🎭</h1>
-      <p style={{ fontSize: "1.2rem", maxWidth: "600px", opacity: 0.9 }}>
+      <h1 className="text-5xl font-extrabold opacity-90">🎭 AI Story Chaos 🎭</h1>
+      <p className="mt-4 text-lg max-w-2xl opacity-90">
         Start with an idea, let AI & your friends create the <strong>most bizarre</strong> story ever!
       </p>
 
-      {/* Start Button with Animations */}
+      {/* Start Button with Hover Effects */}
       <button
-        style={{
-          marginTop: "20px",
-          padding: "10px 20px",
-          fontSize: "1.2rem",
-          background: "yellow",
-          color: "black",
-          border: "none",
-          borderRadius: "10px",
-          cursor: "pointer",
-          transition: "0.3s",
-          transform: "scale(1)",
-        }}
-        onMouseOver={(e) => {
-          e.target.style.background = "orange";
-          e.target.style.transform = "scale(1.1)";
-        }}
-        onMouseOut={(e) => {
-          e.target.style.background = "yellow";
-          e.target.style.transform = "scale(1)";
-        }}
+        className="mt-6 px-6 py-3 bg-yellow-400 text-black font-bold rounded-lg shadow-lg hover:bg-orange-500 transform transition duration-300 hover:scale-110"
         onClick={() => alert("Game Starting... 🚀")}
       >
         Start Game 🚀
       </button>
 
       {/* Floating Animation Elements */}
-      <div
-        style={{
-          position: "absolute",
-          top: "10%",
-          left: "10%",
-          width: "50px",
-          height: "50px",
-          backgroundColor: "rgba(255,255,255,0.3)",
-          borderRadius: "50%",
-          animation: "float 6s ease-in-out infinite",
-        }}
-      />
-      <div
-        style={{
-          position: "absolute",
-          bottom: "10%",
-          right: "10%",
-          width: "70px",
-          height: "70px",
-          backgroundColor: "rgba(255,255,255,0.2)",
-          borderRadius: "50%",
-          animation: "float 8s ease-in-out infinite",
-        }}
-      />
+      <div className="absolute top-10 left-10 w-12 h-12 bg-white/30 rounded-full animate-bounce"></div>
+      {/* <div className="absolute bottom-10 right-10 w-16 h-16 bg-white/20 rounded-full animate-pulse"></div> */}
 
       {/* Game Rules Section */}
-      <div
-        style={{
-          width: "80%",
-          marginTop: "50px",
-          padding: "20px",
-          backgroundColor: "rgba(0, 0, 0, 0.7)",
-          borderRadius: "10px",
-          boxShadow: "0 4px 10px rgba(0,0,0,0.2)",
-          textAlign: "left",
-        }}
-      >
-        <h2 style={{ fontSize: "2rem", textAlign: "center" }}>📜 Game Rules</h2>
-        <ul style={{ fontSize: "1.2rem", lineHeight: "1.8" }}>
+      <div className="w-4/5 mt-10 p-6 bg-gray-900/80 rounded-lg shadow-lg text-left">
+        <h2 className="text-3xl font-bold text-center">📜 Game Rules</h2>
+        <ul className="mt-4 text-lg space-y-2">
           <li>📝 Each player writes one line or keywords.</li>
           <li>🤖 AI generates a crazy plot twist.</li>
           <li>🎭 Players continue the story with new lines.</li>
@@ -110,19 +54,9 @@ const MainSection = () => {
       </div>
 
       {/* Instructions Section */}
-      <div
-        style={{
-          width: "80%",
-          marginTop: "20px",
-          padding: "20px",
-          backgroundColor: "rgba(255, 255, 255, 0.2)",
-          borderRadius: "10px",
-          boxShadow: "0 4px 10px rgba(0,0,0,0.2)",
-          textAlign: "left",
-        }}
-      >
-        <h2 style={{ fontSize: "2rem", textAlign: "center" }}>🕹 How to Play</h2>
-        <ol style={{ fontSize: "1.2rem", lineHeight: "1.8" }}>
+      <div className="w-4/5 mt-6 p-6 bg-white/20 rounded-lg shadow-lg text-left">
+        <h2 className="text-3xl font-bold text-center">🕹 How to Play</h2>
+        <ol className="mt-4 text-lg space-y-2">
           <li>1️⃣ Click the <strong>Start Game</strong> button.</li>
           <li>2️⃣ Each player submits a **line or keywords**.</li>
           <li>3️⃣ AI generates **a creative plot twist**.</li>
@@ -132,16 +66,15 @@ const MainSection = () => {
         </ol>
       </div>
 
-      {/* Floating Animation CSS */}
-      <style>
-        {`
-          @keyframes float {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-20px); }
-            100% { transform: translateY(0px); }
-          }
-        `}
-      </style>
+      {/* Scroll to Top Button (Appears after scrolling down) */}
+      {showScrollButton && (
+        <div
+          className="fixed bottom-10 right-10 w-16 h-16 bg-yellow-400 text-black font-bold rounded-full shadow-lg hover:bg-orange-500 transition-all duration-300 cursor-pointer flex items-center justify-center"
+          onClick={scrollToTop}
+        >
+          ⬆️
+        </div>
+      )}
     </div>
   );
 };
