@@ -21,13 +21,15 @@ chat = client.chats.create(model="gemini-2.0-flash", config=GenerateContentConfi
         ]
     ))
 
-def generate_story(request):
+def generate_beat(request):
   if request.method == 'POST':
     data = json.loads(request)
+
     prompt = data.get("prompt", "")
     if not prompt:
       return JsonResponse({'error':"Invalid request method. Please send a POST request."}, status=400)
 
-    return JsonResponse({"response": "BRUH!"})
+    stuff = chat.send_message(prompt)
+    return JsonResponse({"response": stuff.text})
   else:
     return JsonResponse({'error':"Invalid request method. Please send a POST request."}, status=400)
