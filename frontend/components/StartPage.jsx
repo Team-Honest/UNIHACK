@@ -65,7 +65,7 @@ export default function StartPage() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-r from-purple-600 to-pink-500 text-white px-4">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-r from-purple-600 to-pink-500 text-white px-4 relative">
       {/* Title Section */}
       <h1 className="text-4xl font-bold mb-4">Let's get started!</h1>
       <p className="text-lg text-gray-200 mb-6">Create a new story or join an existing one.</p>
@@ -86,9 +86,9 @@ export default function StartPage() {
         Join a Game
       </button>
 
-      {/* Modal for Nickname and Game ID */}
+      {/* Modal with Background Blur Effect */}
       {isModalOpen && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+        <div className="fixed inset-0 flex items-center justify-center backdrop-blur-md bg-black/30">
           <div className="bg-white p-6 rounded-lg shadow-lg text-black w-96">
             <h2 className="text-xl font-semibold mb-4">
               {mode === "new" ? "Enter Your Nickname" : "Join a Game"}

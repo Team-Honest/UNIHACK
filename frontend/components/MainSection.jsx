@@ -3,22 +3,41 @@ import Link from "next/link";
 
 const MainSection = () => {
   const [showScrollButton, setShowScrollButton] = useState(false);
-  const [typedText, setTypedText] = useState(""); // Typing effect state
-  const fullText = "🎭 AI Story Chaos 🎭"; // Full title text
+  const baseText = "🎭 AI Story "; // Constant part of the title
+  const words = ["Chaos 🎭", "Fun 🎭", "Surprise 🎭", "Adventure 🎭"]; // List of words to animate
+  const [typedText, setTypedText] = useState(baseText + words[0]); // Initial state
+  const [wordIndex, setWordIndex] = useState(0);
+  const [charIndex, setCharIndex] = useState(words[0].length);
+  const [isDeleting, setIsDeleting] = useState(false);
 
-  // Typing Animation Effect
+  // Typing and Deleting Effect
   useEffect(() => {
-    let index = 0;
-    const interval = setInterval(() => {
-      if (index < fullText.length) {
-        setTypedText(fullText.slice(0, index + 1));
-        index++;
+    const typingSpeed = isDeleting ? 100 : 150;
+    const nextWordDelay = 1000; // Delay before deleting starts
+
+    const interval = setTimeout(() => {
+      if (isDeleting) {
+        // Delete letters one by one
+        if (charIndex > 0) {
+          setCharIndex((prev) => prev - 1);
+          setTypedText(baseText + words[wordIndex].slice(0, charIndex - 1));
+        } else {
+          setIsDeleting(false);
+          setWordIndex((prev) => (prev + 1) % words.length); // Move to next word
+        }
       } else {
-        clearInterval(interval);
+        // Type letters one by one
+        if (charIndex < words[wordIndex].length) {
+          setCharIndex((prev) => prev + 1);
+          setTypedText(baseText + words[wordIndex].slice(0, charIndex + 1));
+        } else {
+          setTimeout(() => setIsDeleting(true), nextWordDelay); // Wait before deleting
+        }
       }
-    }, 150); // Typing speed
-    return () => clearInterval(interval);
-  }, []);
+    }, typingSpeed);
+
+    return () => clearTimeout(interval);
+  }, [charIndex, isDeleting, wordIndex]);
 
   // Detects scroll position and toggles the "scroll to top" button
   useEffect(() => {
@@ -41,16 +60,14 @@ const MainSection = () => {
         {typedText}
         <span className="animate-blink">|</span>
       </h1>
+
       <p className="mt-4 text-lg max-w-2xl opacity-90">
         Start with an idea, let AI & your friends create the <strong>most bizarre</strong> story ever!
       </p>
 
       {/* Start Button with Hover Effects */}
-      <button
-        className="mt-6 px-6 py-3 bg-yellow-400 text-black font-bold rounded-lg shadow-lg hover:bg-orange-500 transform transition duration-300 hover:scale-110"
-
-      >
-        <Link href="/StartGame" >Start Game 🚀</Link>
+      <button className="mt-6 px-6 py-3 bg-yellow-400 text-black font-bold rounded-lg shadow-lg hover:bg-orange-500 transform transition duration-300 hover:scale-110">
+        <Link href="/StartGame">Start Game 🚀</Link>
       </button>
 
       {/* Floating Animation Elements */}
