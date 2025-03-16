@@ -14,52 +14,52 @@ export default function GamePage() {
 
   useEffect(() => {
     if (!roomID) return;
-
-    // ✅ Fetch game details from backend
-    fetch(`${API_BASE_URL}/game/${roomID}/`)
-      .then((res) => res.json())
-      .then((data) => {
-        setPlayers(data.players);
-        if (data.story) {
-          setMessages([{ text: data.story, sender: "ai", name: "The Mighty Storyteller" }]); // ✅ AI starts story
-        }
-      });
-
-    // ✅ Setup WebSocket connection
+  
     const ws = new WebSocket(`ws://127.0.0.1:8000/ws/game/${roomID}/`);
-
+  
     ws.onmessage = (event) => {
       const data = JSON.parse(event.data);
       console.log("🔍 WebSocket Update:", data);
-
-      if (data.story) {
+  
+      // ✅ Prevent duplicate AI messages
+      if (data.story && !messages.some(msg => msg.text === data.story)) {
         setMessages((prevMessages) => [
           ...prevMessages,
-          { text: data.story, sender: "ai", name: "AI" },
+          { text: data.story, sender: "ai", name: "The Mighty Storyteller" },
         ]);
       }
-
+  
+      // ✅ Prevent duplicate user messages
+      if (data.text && data.sender === "user" && !messages.some(msg => msg.text === data.text)) {
+        setMessages((prevMessages) => [
+          ...prevMessages,
+          { text: data.text, sender: "user", name: data.name },
+        ]);
+      }
+  
       if (data.players) {
-        console.log("✅ Updating Players List:", data.players);
         setPlayers(data.players);
       }
     };
-
+  
     setSocket(ws);
-
+  
     return () => ws.close();
   }, [roomID]);
 
   const handleStoryUpdate = () => {
     if (!inputText.trim()) return;
   
-    // ✅ Add user message to chat first (with name)
-    setMessages((prevMessages) => [
-      ...prevMessages,
-      { text: inputText, sender: "user", name: nickname },
-    ]);
+    const userMessage = {
+      text: inputText,
+      sender: "user",
+      name: nickname,
+    };
   
-    // ✅ Send text to backend for AI response
+    if (socket) {
+      socket.send(JSON.stringify(userMessage));
+    }
+  
     fetch(`${API_BASE_URL}/game/${roomID}/generate-story/`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -67,24 +67,10 @@ export default function GamePage() {
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log("✅ AI Story Response:", data);
-  
-        if (data.updated_story) {
-          // 🚀 DO NOT manually add AI response to chat
-          // The WebSocket will handle updating the chat with the full story
-        } else {
-          console.error("❌ AI did not return a story.");
-        }
-  
-        setInputText("");
+        console.log("✅ AI Story Response Received via WebSocket, no need to add here.");
+        setInputText(""); // ✅ Only reset input, don't add AI response here
       })
       .catch((error) => console.error("❌ Error updating story:", error));
-  
-    // ✅ Send message through WebSocket
-    if (socket) {
-      console.log("🔍 Sending message to WebSocket:", inputText);
-      socket.send(JSON.stringify({ text: inputText }));
-    }
   };
 
   return (

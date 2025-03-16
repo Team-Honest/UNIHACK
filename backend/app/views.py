@@ -133,11 +133,25 @@ def update_story(request, game_id):
     if request.method == "POST":
         data = json.loads(request.body.decode("utf-8"))
         new_text = data.get("text", "")
+        sender = data.get("nickname", "Anonymous")  # Get player name
 
         try:
             game = Game.objects.get(id=game_id)
-            game.story += " " + new_text
+            game.story += " " + new_text  # Append new text
             game.save()
+
+            # ✅ Broadcast user message via WebSocket
+            channel_layer = get_channel_layer()
+            async_to_sync(channel_layer.group_send)(
+                f"game_{game_id}",
+                {
+                    "type": "update_message",
+                    "text": new_text,
+                    "name": sender,
+                    "sender": "user",
+                },
+            )
+
             return JsonResponse({"message": "Story updated", "story": game.story})
         except Game.DoesNotExist:
             return JsonResponse({"error": "Game not found"}, status=404)
