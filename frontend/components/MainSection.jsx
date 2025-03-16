@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import Link from "next/link";
 
 const MainSection = () => {
   const [showScrollButton, setShowScrollButton] = useState(false);
@@ -47,16 +48,16 @@ const MainSection = () => {
       {/* Start Button with Hover Effects */}
       <button
         className="mt-6 px-6 py-3 bg-yellow-400 text-black font-bold rounded-lg shadow-lg hover:bg-orange-500 transform transition duration-300 hover:scale-110"
-        onClick={() => alert("Game Starting... 🚀")}
+
       >
-        Start Game 🚀
+        <Link href="/StartGame" >Start Game 🚀</Link>
       </button>
 
       {/* Floating Animation Elements */}
       <div className="absolute top-10 left-10 w-12 h-12 bg-white/30 rounded-full animate-bounce"></div>
 
       {/* Game Rules Section */}
-      <div className="w-4/5 mt-10 p-6 bg-gray-900/80 rounded-lg shadow-lg text-left">
+      <div className="w-4/5 mx-auto mt-10 p-6 bg-gray-900/80 rounded-lg shadow-lg text-center">
         <h2 className="text-3xl font-bold text-center">📜 Game Rules</h2>
         <ul className="mt-4 text-lg space-y-2">
           <li>📝 Each player writes one line or keywords.</li>
@@ -68,7 +69,7 @@ const MainSection = () => {
       </div>
 
       {/* Instructions Section */}
-      <div className="w-4/5 mt-6 p-6 bg-white/20 rounded-lg shadow-lg text-left">
+      <div className="w-4/5 mx-auto mt-6 p-6 bg-white/20 rounded-lg shadow-lg text-">
         <h2 className="text-3xl font-bold text-center">🕹 How to Play</h2>
         <ol className="mt-4 text-lg space-y-2">
           <li>1️⃣ Click the <strong>Start Game</strong> button.</li>
