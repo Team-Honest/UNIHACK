@@ -22,11 +22,7 @@ const MainSection = () => {
   // Detects scroll position and toggles the "scroll to top" button
   useEffect(() => {
     const handleScroll = () => {
-      if (window.scrollY > 200) {
-        setShowScrollButton(true);
-      } else {
-        setShowScrollButton(false);
-      }
+      setShowScrollButton(window.scrollY > 200);
     };
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
@@ -42,7 +38,7 @@ const MainSection = () => {
       {/* Title with Typing Animation */}
       <h1 className="text-5xl font-extrabold opacity-90">
         {typedText}
-        <span className="blink">|</span>
+        <span className="animate-blink">|</span>
       </h1>
       <p className="mt-4 text-lg max-w-2xl opacity-90">
         Start with an idea, let AI & your friends create the <strong>most bizarre</strong> story ever!
@@ -76,15 +72,15 @@ const MainSection = () => {
         <h2 className="text-3xl font-bold text-center">🕹 How to Play</h2>
         <ol className="mt-4 text-lg space-y-2">
           <li>1️⃣ Click the <strong>Start Game</strong> button.</li>
-          <li>2️⃣ Each player submits a <strong> line or keywords</strong>.</li>
-          <li>3️⃣ AI generates <strong> a creative plot twist</strong>.</li>
-          <li>4️⃣ Players continue adding lines <strong> one by one</strong>.</li>
+          <li>2️⃣ Each player submits a <strong>line or keywords</strong>.</li>
+          <li>3️⃣ AI generates <strong>a creative plot twist</strong>.</li>
+          <li>4️⃣ Players continue adding lines <strong>one by one</strong>.</li>
           <li>5️⃣ AI keeps twisting the story.</li>
-          <li>6️⃣ Enjoy reading the final <strong> bizarre & funny</strong> story!</li>
+          <li>6️⃣ Enjoy reading the final <strong>bizarre & funny</strong> story!</li>
         </ol>
       </div>
 
-      {/* Scroll to Top Button (Appears after scrolling down) */}
+      {/* Scroll to Top Button */}
       {showScrollButton && (
         <div
           className="fixed bottom-10 right-10 w-16 h-16 bg-yellow-400 text-black font-bold rounded-full shadow-lg hover:bg-orange-500 transition-all duration-300 cursor-pointer flex items-center justify-center"
@@ -93,18 +89,6 @@ const MainSection = () => {
           ⬆️
         </div>
       )}
-
-      {/* Typing Animation CSS */}
-      <style jsx>{`
-        .blink {
-          animation: blink-animation 1s steps(2, start) infinite;
-        }
-        @keyframes blink-animation {
-          0% { opacity: 1; }
-          50% { opacity: 0; }
-          100% { opacity: 1; }
-        }
-      `}</style>
     </div>
   );
 };

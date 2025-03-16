@@ -7,7 +7,7 @@ export default function StartGame(){
 
 
     return (
-        <div>
+        <div classname="bg-white">
             <Navbar></Navbar>
             <StartPage></StartPage>
             <Footer></Footer>
