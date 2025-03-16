@@ -4,7 +4,7 @@ import Link from "next/link";
 const MainSection = () => {
   const [showScrollButton, setShowScrollButton] = useState(false);
   const baseText = "🎭 AI Story "; // Constant part of the title
-  const words = ["Chaos 🎭", "Fun 🎭", "Surprise 🎭", "Adventure 🎭"]; // List of words to animate
+  const words = ["Chaos ", "Fun ", "Surprise ", "Adventure "]; // List of words to animate
   const [typedText, setTypedText] = useState(baseText + words[0]); // Initial state
   const [wordIndex, setWordIndex] = useState(0);
   const [charIndex, setCharIndex] = useState(words[0].length);
