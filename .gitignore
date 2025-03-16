@@ -2,3 +2,5 @@ __pycache__/
 /backend/app/env.py
 
 /backend/myVenv
+/backend/app/__pycache__
+/backend/app/migrations
