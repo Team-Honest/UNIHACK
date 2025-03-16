@@ -1,18 +1,14 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useRouter } from "next/router";
 
-export default function StartGame() {
+export default function StartPage() {
   const [inviteCode, setInviteCode] = useState("");
   const [nickname, setNickname] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [mode, setMode] = useState(""); // "new" or "join"
   const router = useRouter();
 
-  useEffect(() => {
-    // Load existing games from localStorage when the component mounts
-    const storedGames = JSON.parse(localStorage.getItem("games")) || {};
-    console.log("Stored Games:", storedGames);
-  }, []);
+  const API_BASE_URL = "http://127.0.0.1:8000"; // Backend API URL
 
   const startNewGame = () => {
     setMode("new");
@@ -24,44 +20,47 @@ export default function StartGame() {
     setIsModalOpen(true);
   };
 
-  const handleConfirm = () => {
+  const handleConfirm = async () => {
     if (!nickname.trim()) {
       alert("Please enter a nickname.");
       return;
     }
-
+  
     if (mode === "new") {
-      // Generate a new game ID
-      const roomId = Math.random().toString(36).substring(2, 8);
-
-      // Save the new game session in localStorage
-      const storedGames = JSON.parse(localStorage.getItem("games")) || {};
-      storedGames[roomId] = { players: [nickname] }; // Store player list
-      localStorage.setItem("games", JSON.stringify(storedGames));
-
-      // Redirect to the game page
-      router.push(`/game/${roomId}?nickname=${nickname}`);
+      // ✅ Send nickname to backend when creating a new game
+      const response = await fetch(`${API_BASE_URL}/create-game/`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ nickname }),  // ✅ FIXED: Send nickname to backend
+      });
+  
+      const data = await response.json();
+      if (response.ok && data.game_id) {
+        router.push(`/game/${data.game_id}?nickname=${nickname}`);
+      } else {
+        alert(`❌ Error creating game: ${data.error || "Unknown error"}`);
+      }
     } else if (mode === "join") {
       if (!inviteCode.trim()) {
         alert("Please enter a valid game ID.");
         return;
       }
-
-      // Check if the game exists in localStorage
-      const storedGames = JSON.parse(localStorage.getItem("games")) || {};
-      if (!storedGames[inviteCode]) {
-        alert("Invalid game ID! Please enter a correct one.");
-        return;
+  
+      // ✅ Error handling when joining a game
+      const response = await fetch(`${API_BASE_URL}/join-game/`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ game_id: inviteCode, nickname }),
+      });
+  
+      const data = await response.json();
+      if (response.ok) {
+        router.push(`/game/${inviteCode}?nickname=${nickname}`);
+      } else {
+        alert(`❌ Invalid game ID: ${data.error || "Unknown error"}`);
       }
-
-      // Add player to the game session
-      storedGames[inviteCode].players.push(nickname);
-      localStorage.setItem("games", JSON.stringify(storedGames));
-
-      // Redirect to the game page
-      router.push(`/game/${inviteCode}?nickname=${nickname}`);
     }
-
+  
     setIsModalOpen(false);
   };
 

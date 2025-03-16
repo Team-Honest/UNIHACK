@@ -1,88 +1,141 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
+import Navbar from "../../components/Navbar";
 
 export default function GamePage() {
   const router = useRouter();
   const { roomID, nickname } = router.query;
   const [players, setPlayers] = useState([]);
-  const [story, setStory] = useState("");
+  const [messages, setMessages] = useState([]); // ✅ Stores user input & AI responses
   const [inputText, setInputText] = useState("");
+  const [socket, setSocket] = useState(null);
+
+  const API_BASE_URL = "http://127.0.0.1:8000"; // Backend API URL
 
   useEffect(() => {
-    if (!roomID || !nickname) return;
+    if (!roomID) return;
 
-    // Retrieve game data from localStorage
-    const storedGames = JSON.parse(localStorage.getItem("games")) || {};
-    const gameData = storedGames[roomID];
+    // ✅ Fetch game details from backend
+    fetch(`${API_BASE_URL}/game/${roomID}/`)
+      .then((res) => res.json())
+      .then((data) => {
+        setPlayers(data.players);
+        if (data.story) {
+          setMessages([{ text: data.story, sender: "ai", name: "The Mighty Storyteller" }]); // ✅ AI starts story
+        }
+      });
 
-    if (!gameData) {
-      alert("Game session not found! Redirecting to home.");
-      router.push("/");
-      return;
-    }
+    // ✅ Setup WebSocket connection
+    const ws = new WebSocket(`ws://127.0.0.1:8000/ws/game/${roomID}/`);
 
-    // Update the players list
-    setPlayers(gameData.players);
+    ws.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      console.log("🔍 WebSocket Update:", data);
 
-    // Load existing story
-    const savedStory = localStorage.getItem(`story_${roomID}`) || "";
-    setStory(savedStory);
-  }, [roomID, nickname, router]);
+      if (data.story) {
+        setMessages((prevMessages) => [
+          ...prevMessages,
+          { text: data.story, sender: "ai", name: "AI" },
+        ]);
+      }
+
+      if (data.players) {
+        console.log("✅ Updating Players List:", data.players);
+        setPlayers(data.players);
+      }
+    };
+
+    setSocket(ws);
+
+    return () => ws.close();
+  }, [roomID]);
 
   const handleStoryUpdate = () => {
     if (!inputText.trim()) return;
-
-    // Append new text to the story
-    const newStory = story + " " + inputText;
-    setStory(newStory);
-    setInputText("");
-
-    // Save updated story to localStorage
-    localStorage.setItem(`story_${roomID}`, newStory);
+  
+    // ✅ Add user message to chat first (with name)
+    setMessages((prevMessages) => [
+      ...prevMessages,
+      { text: inputText, sender: "user", name: nickname },
+    ]);
+  
+    // ✅ Send text to backend for AI response
+    fetch(`${API_BASE_URL}/game/${roomID}/generate-story/`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text: inputText }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log("✅ AI Story Response:", data);
+  
+        if (data.updated_story) {
+          // 🚀 DO NOT manually add AI response to chat
+          // The WebSocket will handle updating the chat with the full story
+        } else {
+          console.error("❌ AI did not return a story.");
+        }
+  
+        setInputText("");
+      })
+      .catch((error) => console.error("❌ Error updating story:", error));
+  
+    // ✅ Send message through WebSocket
+    if (socket) {
+      console.log("🔍 Sending message to WebSocket:", inputText);
+      socket.send(JSON.stringify({ text: inputText }));
+    }
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-200 p-6">
-      <div className="bg-white shadow-lg rounded-lg p-6 w-full max-w-2xl">
-        <h1 className="text-3xl font-bold text-center text-gray-800">Game Room: {roomID}</h1>
-        <p className="text-lg text-center text-gray-600 mt-2">Welcome, <span className="font-semibold text-blue-600">{nickname}</span>!</p>
+    <div>
+    <Navbar></Navbar>
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-200 text-white p-6 bg-gradient-to-r from-purple-600 to-pink-500 transition-all duration-500">
+      <h1 className="text-3xl font-bold">Game Room: {roomID}</h1>
+      <p className="text-lg">Welcome, {nickname}!</p>
 
-        {/* Player List */}
-        <div className="mt-6 p-4 bg-gray-100 rounded-lg shadow">
-          <h2 className="text-xl font-semibold text-gray-800">Players in this game:</h2>
-          <ul className="mt-2 space-y-1">
-            {players.map((player, index) => (
-              <li key={index} className="text-gray-700 font-medium">
-                ✅ {player}
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        {/* Story Section */}
-        <div className="mt-6 p-4 bg-gray-100 rounded-lg shadow">
-          <h2 className="text-xl font-semibold text-gray-800">Story Progress:</h2>
-          <div className="mt-2 p-3 h-40 bg-white border rounded overflow-y-auto">
-            <p className="text-gray-700">{story || "No story started yet. Be the first to add!"}</p>
-          </div>
-        </div>
-
-        {/* Story Contribution Input */}
-        <div className="mt-6">
-          <textarea
-            className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-            placeholder="Add to the story..."
-            value={inputText}
-            onChange={(e) => setInputText(e.target.value)}
-          />
-          <button
-            onClick={handleStoryUpdate}
-            className="mt-3 w-full bg-blue-500 text-white py-3 rounded-lg font-semibold hover:bg-blue-600 transition"
-          >
-            Add to Story
-          </button>
-        </div>
+      <div className="mt-4">
+        <h2 className="text-xl font-semibold">Players:</h2>
+        <ul>
+          {players.map((player, index) => (
+            <li key={index}>✅ {player}</li>
+          ))}
+        </ul>
       </div>
+
+      {/* ✅ Chat Box */}
+      <div className="mt-4 p-4 bg-white text-black shadow-lg w-full  h-[70vh] overflow-y-auto rounded-lg">
+        {messages
+          .filter((msg) => msg.text.trim() !== "") // ✅ Prevent blank bubbles
+          .map((msg, index) => (
+            <div
+              key={index}
+              className={`p-3 my-2 rounded-lg max-w-3xl ${
+                msg.sender === "user"
+                  ? "bg-blue-300 self-end text-right ml-auto"
+                  : "bg-gray-300 self-start mr-auto"
+              }`}
+            >
+              <p className="text-sm font-semibold ">{msg.name}:</p>
+              <p className="text-sm">{msg.text}</p>
+            </div>
+          ))}
+      </div>
+
+      {/* ✅ User Input Field */}
+      <textarea
+        className="mt-4 w-full max-w-xl p-2 border rounded bg-white text-black"
+        value={inputText}
+        onChange={(e) => setInputText(e.target.value)}
+      />
+
+      <button
+        onClick={handleStoryUpdate}
+        className="mt-2 bg-blue-500 text-white py-2 px-4 rounded"
+      >
+        Add to Story
+      </button>
+    </div>
     </div>
   );
 }
