@@ -14,9 +14,15 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+
+
 from django.urls import path
-import app.views
+from . import views  # ✅ Import views correctly
 
 urlpatterns = [
-    path('generate-beat/', app.views.generate_beat, name='bruh')
+    path("create-game/", views.create_game, name="create_game"),  # ✅ Create game
+    path("join-game/", views.join_game, name="join_game"),  # ✅ Join game
+    path("game/<str:game_id>/", views.get_game, name="get_game"),  # ✅ Get game details
+    path("game/<str:game_id>/generate-story/", views.generate_beat, name="generate_story"),  # ✅ Generate AI story
+    path("game/<str:game_id>/update-story/", views.update_story, name="update_story"),  # ✅ Update story
 ]

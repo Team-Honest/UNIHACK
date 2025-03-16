@@ -1,2 +1,4 @@
 __pycache__/
 /backend/app/env.py
+
+/backend/myVenv
