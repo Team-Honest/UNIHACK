@@ -76,8 +76,20 @@ This project is a web application that enables users to collaboratively create s
    python manage.py migrate
    ```
 
+5. ** Set Up Environment Variables**
 
-5. **Start the Django development server**:
+To keep sensitive information private, we use an `env.py` file.
+
+#### **Step 1: Create an `env.py` file**
+Inside the `backend/` directory, create a new file called **`env.py`**, and add the following:
+
+```python
+import os
+
+GEMINI_API_KEY = "your_google_gemini_api_key"
+```
+
+6. **Start the Django development server**:
    ```sh
    python manage.py runserver
    ```
