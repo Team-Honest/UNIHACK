@@ -4,3 +4,4 @@ __pycache__/
 /backend/myVenv
 /backend/app/__pycache__
 /backend/app/migrations
+/backend/db.sqlite3
